@@ -1,18 +1,17 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 // Lớp cơ sở Person
 abstract class Person {
     // Thuộc tính của lớp Person
-    private String id;
-    private String name;
-    private String phoneNumber;
-    private String email;
-    private String gender;
-    private String address;
+    protected String id;
+    protected String name;
+    protected String phoneNumber;
+    protected String email;
+    protected String gender;
+    protected String address;
 
     // Constructor để khởi tạo đối tượng Person với dữ liệu ban đầu
     Person(String id, String name, String phoneNumber, String email, String gender, String address) {
@@ -107,6 +106,18 @@ class Student extends Person {
         System.out.println("Major: " + major);
         System.out.println("Year: " + year);
         System.out.println("GPA: " + gpa);
+    }
+
+    // Phương thức tính điểm trung bình cho Student
+    public double calculateAverageGrade() {
+        if (enrollments.isEmpty()) {
+            return 0.0;
+        }
+        double totalGrade = 0.0;
+        for (int i = 0; i < enrollments.size(); i++) {
+            totalGrade += enrollments.get(i).getGrade();
+        }
+        return totalGrade / enrollments.size();
     }
 
     // Getter và Setter cho các thuộc tính riêng
@@ -351,6 +362,7 @@ class UniversityManagementSystem {
         List<Enrollment> studentEnrollmentList = studentEnrollments.getOrDefault(student, new ArrayList<>());
         studentEnrollmentList.add(enrollment);
         studentEnrollments.put(student, studentEnrollmentList);
+        student.getEnrollments().add(enrollment);
     }
 
     // Xem đăng ký của một sinh viên
@@ -369,34 +381,46 @@ public class QLDT {
 
             // Thêm sinh viên
             Student student1 = new Student("1", "Alice", "123456789", "alice@example.com", "Female", "123 Main St", "Computer Science", 2, 3.5, new ArrayList<>());
+            Student student2 = new Student("2", "Bob", "987654321", "bob@example.com", "Male", "456 Oak St", "Electrical Engineering", 1, 3.8, new ArrayList<>());
+            Student student3 = new Student("3", "Carol", "555555555", "carol@example.com", "Female", "789 Pine St", "Mathematics", 3, 3.9, new ArrayList<>());
+
             universitySystem.addStudent(student1);
+            universitySystem.addStudent(student2);
+            universitySystem.addStudent(student3);
 
             // Thêm giảng viên
             Faculty faculty1 = new Faculty("101", "Dr. Bob", "987654321", "bob@example.com", "Male", "456 Elm St", "Professor", "A101", "Computer Science", new ArrayList<>());
+            Faculty faculty2 = new Faculty("102", "Dr. Alice", "123123123", "alice.prof@example.com", "Female", "789 Maple St", "Associate Professor", "B202", "Mathematics", new ArrayList<>());
+            Faculty faculty3 = new Faculty("103", "Dr. Charlie", "321321321", "charlie@example.com", "Male", "101 Walnut St", "Assistant Professor", "C303", "Physics", new ArrayList<>());
+
             universitySystem.addFaculty(faculty1);
+            universitySystem.addFaculty(faculty2);
+            universitySystem.addFaculty(faculty3);
 
             // Thêm khóa học
             Course course1 = new Course("CSC101", "Introduction to Computer Science", 3, faculty1);
+            Course course2 = new Course("MAT201", "Advanced Calculus", 4, faculty2);
+            Course course3 = new Course("PHY301", "Quantum Mechanics", 3, faculty3);
+
             universitySystem.addCourse(course1);
+            universitySystem.addCourse(course2);
+            universitySystem.addCourse(course3);
 
             // Đăng ký sinh viên vào khóa học
-            universitySystem.enrollStudent(student1, course1, "Enrolled", 0);
+            universitySystem.enrollStudent(student1, course1, "Enrolled", 85);
+            universitySystem.enrollStudent(student2, course2, "Enrolled", 90);
+            universitySystem.enrollStudent(student3, course3, "Enrolled", 95);
+            universitySystem.enrollStudent(student1, course2, "Enrolled", 88);
 
-            // Hiển thị thông tin đăng ký của sinh viên
-            List<Enrollment> studentEnrollments = universitySystem.getStudentEnrollments(student1);
-            for (Enrollment enrollment : studentEnrollments) {
-                System.out.println("Student: " + enrollment.getStudent().getName());
-                System.out.println("Course: " + enrollment.getCourse().getCourseName());
-                System.out.println("Enrollment Status: " + enrollment.getEnrollmentStatus());
-                System.out.println("Grade: " + enrollment.getGrade());
-            }
+            // Hiển thị điểm trung bình của sinh viên
+            System.out.println("Average Grade for " + student1.getName() + ": " + student1.calculateAverageGrade());
+            System.out.println("Average Grade for " + student2.getName() + ": " + student2.calculateAverageGrade());
+            System.out.println("Average Grade for " + student3.getName() + ": " + student3.calculateAverageGrade());
+
         } catch (Exception e) {
             e.printStackTrace();
             // Xử lý ngoại lệ ở đây nếu cần
         }
     }
 }
-
-
-
 
